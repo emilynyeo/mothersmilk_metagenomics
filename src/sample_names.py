@@ -3,7 +3,9 @@ import sys
 
 sys.path.insert(0, '../')  # noqa
 
-data_dir = 'doc/'
+# Path to origin raw data
+data_dir = '/pl/active/ADOR/projects/mothersmilk/chla_data_transfer/fastq/fastq/'
+out_dir = '/pl/active/ADOR/projects/mothersmilk/mm_pipeline/'
 
 # List all files in the data_dir
 files = os.listdir(data_dir)
@@ -13,7 +15,7 @@ sample_names = [os.path.splitext(file)[0].split('.')[0].split('_')[0] for file i
 file.endswith('.fastq') or file.endswith('.fq.gz')]
 
 # Create a sample_names.txt file
-sample_names_file_path = os.path.join(data_dir, 'sample_names.txt')
+sample_names_file_path = os.path.join(out_dir, 'sample_names.txt')
 with open(sample_names_file_path, 'w') as sample_file:
     for sample_name in sample_names:
         sample_file.write(sample_name + '\n')
