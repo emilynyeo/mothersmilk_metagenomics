@@ -1,33 +1,29 @@
 import os
+import pandas as pd
+from os.path import join as pj
+from os.path import split
+from src.snake_utils import read_samples_full, read_sample_names
 from types import SimpleNamespace
 config = SimpleNamespace(**config)
-
-# extract only the part of the sample name before the first "." or "_".
-def read_sample_names(filename):
-    with open(filename, 'r') as file:
-        return [line.strip().split('.')[0].split('_')[0] for line in file]
 
 # Read sample names from "sample_names.txt" made using src/sample_names.py prior to snakemake
 samples=read_sample_names(f"{config.sample_IDs})
 
 rule all:
     input:
-        expand(f"{config.out_dir}test/{{sample}}.denovo_duplicates_marked.trimmed.1_fastqc.html", sample=samples),
-        f"{config.out_dir}test/multiqc_report.html"
+        expand(f"{config.out_dir}test/{{sample}}_1.txt", sample=samples),
+        expand(f"{config.out_dir}test/{{sample}}_2.txt", sample=samples)
 
-rule fastqc:
+rule test:
     input:
-        F=f"{config.data_dir}{{sample}}.denovo_duplicates_marked.trimmed.1.fastq",
-        R=f"{config.data_dir}{{sample}}.denovo_duplicates_marked.trimmed.2.fastq"
+        F=f"{config.data_dir}{{sample}}_1.fq.gz",
+        R=f"{config.data_dir}{{sample}}_2.fq.gz"
     output:
-        html1=f"{config.out_dir}test/{{sample}}.denovo_duplicates_marked.trimmed.1_fastqc.html",
-        zip1=f"{config.out_dir}test/{{sample}}.denovo_duplicates_marked.trimmed.1_fastqc.zip",
-        html2=f"{config.out_dir}test/{{sample}}.denovo_duplicates_marked.trimmed.2_fastqc.html",
-        zip2=f"{config.out_dir}test/{{sample}}.denovo_duplicates_marked.trimmed.2_fastqc.zip"
-    conda: "quality"
+        test1.txt=f"{config.out_dir}test/{{sample}}_1.txt",
+        test2.txt=f"{config.out_dir}test/{{sample}}_2.txt",
     shell:
         """
-        mkdir -p {config.out_dir}test
-        fastqc {input.F} --outdir {config.out_dir}test/
-        fastqc {input.R} --outdir {config.out_dir}test/
+        mkdir -p {config.out_dir}test/
+        ls -l {input.F} | awk '{print $9}' > {config.out_dir}test/{wildcards.sample}_1.txt
+        ls -l {input.R} | awk '{print $9}' > {config.out_dir}test/{wildcards.sample}_2.txt
         """
