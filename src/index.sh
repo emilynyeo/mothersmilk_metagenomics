@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # these positional arguments get called in in run.sh 
 main_dir=$1 # This is where the snakefile and runsh file is
@@ -32,13 +32,13 @@ log=$out_dir'log/ind_log.txt'
 echo 'Going to project directory...'
 cd $main_dir
 
-# runnning QC pipeline
-echo 'running QC pipeline' > $log
+# runnning MM pipeline
+echo 'running MM pipeline' > $log
 start_slice=$(date +%s.%3N)
 snakemake \
     -s snakefile \
-    -c 16 \
-    -j 5 \
+    -c 1 \
+    -j 1 \
     --configfile=$config
 end_slice=$(date +%s.%3N)
 slice_time=$(echo "scale=3; $end_slice - $start_slice" | bc)
