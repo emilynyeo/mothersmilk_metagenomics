@@ -2,7 +2,7 @@ import os
 import pandas as pd
 from os.path import join as pj
 from os.path import split
-from src.snake_utils import read_samples_full, read_sample_names
+from src.snake_utils import read_samples_full, read_sample_names, get_partition, get_mem, get_runtime, get_threads, get_host_mapping_samples, get_slurm_extra
 from types import SimpleNamespace
 config = SimpleNamespace(**config)
 
