@@ -4,7 +4,7 @@ from os.path import join as pj
 from os.path import split
 from src.snake_utils import read_samples_full, read_sample_names, get_partition, get_mem, get_runtime, get_threads, get_host_mapping_samples, get_slurm_extra
 from types import SimpleNamespace
-config = SimpleNamespace(**config)
+#config = SimpleNamespace(**config)
 
 # Read sample names from "sample_names.txt" made using src/sample_names.py prior to snakemake
 samples=read_sample_names(f"{config.sample_IDs})
