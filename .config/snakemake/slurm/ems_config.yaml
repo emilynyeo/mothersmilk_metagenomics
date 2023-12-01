@@ -8,9 +8,9 @@ main_dir:
 data_dir:
   /pl/active/ADOR/projects/mothersmilk/chla_data_transfer/fastq/fastq/
 out_dir:
-  /Users/emye7956/research/projects/Group-6-Metagenomic-Pipeline/doc/
+  /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/doc/
 sample_IDs:
-  /pl/active/ADOR/projects/mothersmilk/mm_pipeline/sample_names_long.txt
+  /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/sample_names_long.txt
 
 # Project name
 PROJ: test

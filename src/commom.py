@@ -14,4 +14,4 @@ config_dir="/pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/src/"
 bash $index_script $main_dir $out_dir $config_file 
 
 # run snakemake using the cookiecutter profile
-snakemake --profile mothersmilk_metagenomics/.config/snakemake/slurm --config ems_config.yaml
+snakemake --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm --configfile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm/ems_config.yaml
