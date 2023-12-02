@@ -12,6 +12,9 @@ out_dir:
 sample_IDs:
   /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/sample_names_long.txt
 
+fastqc1:
+  /pl/active/ADOR/projects/mothersmilk/fastqc1/fastqc1_output_new/
+
 # Project name
 PROJ: test
 
