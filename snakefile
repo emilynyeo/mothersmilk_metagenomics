@@ -16,7 +16,13 @@ rule all:
         expand(f"{config['out_dir']}test/{{sample}}_2.txt", sample=samples),
     # fastqc1 output:
         expand(f"{config['fastqc1']}{{sample}}", sample=samples)
-
+    # multiqc output:
+        directory(f"{config['fastqc1']}{{multiqc_report}}")
+    # trim adapters:
+        expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
+        expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed_2P", sample=samples),
+        expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed", sample=samples),
+    
 rule test:
     input:
         F=f"{config['data_dir']}{{sample}}_1.fq.gz",
@@ -60,9 +66,9 @@ rule fastqc1:
         """
 rule multiqc1:
     input:
-        directory(f"{config['fastqc1']}")
+        #directory(f"{config['fastqc1']}")
         expand(f"{config['fastqc1']}{{sample}}{{sample}}_1_fastqc.zip", sample=SAMPLES),
-        expand(f"{config['fastqc1']}{{sample}}{{sample}}_1_fastqc.zip", sample=SAMPLES)
+        expand(f"{config['fastqc1']}{{sample}}{{sample}}_2_fastqc.zip", sample=SAMPLES)
     output:
         directory(f"{config['fastqc1']}{{multiqc_report}}")
     resources:
@@ -76,3 +82,50 @@ rule multiqc1:
         """
         multiqc {params.fastqc1} -o {params.fastqc1}multiqc_report
         """
+rule trim_and_adapters
+    input:
+        FORWARD=f"{config['data_dir']}{{sample}}_1.fq.gz",
+        REVERSE=f"{config['data_dir']}{{sample}}_2.fq.gz"
+    output:
+        expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
+        expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed_2P", sample=samples),
+        expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed", sample=samples),
+        #expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed_2U", sample=samples),
+    conda:
+        "trimmomatic_env"
+    resources:
+        mem_mb=64000, # MB
+        partition="amilan",
+        slurm_extra="--nodes=10 --qos=normal --time=20:00:00 --ntasks=20 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+    threads: 16
+    params:
+        trimout=config['trim_adapters'],
+        flops=config['flops'],
+        min=config['min_readlen']
+        lead=config['leading']
+        trail=config['trailing']
+        swindow=config['swindow']
+        adapters=config['adapters']
+    shell:
+        """
+        mkdir -p {params.trimout}
+        touch {params.flops}
+        mkdir -p {params.trimput}{wildcards.sample}
+        trimmomatic PE -threads 16 \
+            -trimlog {params.trimput}{wildcards.sample}/{wildcards.sample}.trimlog \
+            -summary {params.trimput}{wildcards.sample}/{wildcards.sample}.trim.log \
+            -validatePairs {input.FORWARD} {input.REVERSE} \
+            -baseout {params.trimout}{wildcards.sample}/{wildcards.sample}.trimmed \
+            ILLUMINACLIP:{params.adapters} SLIDINGWINDOW:{params.swindow} LEADING:{params.lead} TRAILING:{params.trail} MINLEN:{params.min} \
+            || echo {wildcards.sample} >> {params.flops}
+        """ 
+
+# rule fastqc2:
+# rule hostile:
+# rule fastqc3:
+# rule download_kraken_db:
+# rule downlad_humann_db:
+# rule run_humann:
+# rule run_kracken:
+# rule run_bracken:
+# rule merge_outputs:    

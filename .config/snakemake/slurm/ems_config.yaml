@@ -12,9 +12,6 @@ out_dir:
 sample_IDs:
   /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/sample_names_long.txt
 
-fastqc1:
-  /pl/active/ADOR/projects/mothersmilk/fastqc1/fastqc1_output_new/
-
 # Project name
 PROJ: test
 
@@ -24,13 +21,28 @@ fwd_reads_path: forward_reads
 rev_reads_path: reverse_reads
 
 ################################################
+### Fastqc ###
+fastqc1:
+  /pl/active/ADOR/projects/mothersmilk/fastqc1/fastqc1_output_new/
+
+################################################
 ### TRIMMOMATIC ADAPTER AND QUALITY TRIMMING ###
+trim_adapters:
+  /pl/active/ADOR/projects/mothersmilk/trimming/noadapters_trim_output_new/
 # minimum read length after trimming
 min_readlen: 50
 # the minimum quality for the start of a read. If it's below this quality, trim that base pair
-readstart_qual_min: 20
+leading: 20
 # the minimum quality for the end of a read. If it's below this quality, trim that base pair
-readend_qual_min: 20
+trailing: 20
+# Sliding window is ...
+swindow: 4:20
+# The adapter sequences to remove
+adapters:
+  /pl/active/ADOR/projects/mothersmilk/trimming/adapters.fasta:2:30:10
+flops:
+  /pl/active/ADOR/projects/mothersmilk/trimming/noadapters_trim_output_new/failures.txt
+
 
 ######################
 ### SEQTK TRIMMING ###
