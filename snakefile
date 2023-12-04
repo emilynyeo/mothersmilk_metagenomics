@@ -17,7 +17,7 @@ rule all:
     # fastqc1 output:
         expand(f"{config['fastqc1']}{{sample}}", sample=samples),
     # multiqc output:
-        f"{config['fastqc1']}{{multiqc_report}}.html",
+        f"{config['fastqc1']}multiqc_report.html",
     # trim adapters:
         expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
         expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_2P", sample=samples),
@@ -41,8 +41,8 @@ rule test:
 
 rule fastqc1:
     input:
-        FORWARD=f"{config['data_dir']}{{sample}}_1.fq.gz",
-        REVERSE=f"{config['data_dir']}{{sample}}_2.fq.gz"
+        FORWARD=expand(f"{config['data_dir']}{{sample}}_1.fq.gz", sample=samples),
+        REVERSE=expand(f"{config['data_dir']}{{sample}}_2.fq.gz", sample=samples)
     output:
         directory(f"{config['fastqc1']}{{sample}}"),
         f"{config['fastqc1']}{{sample}}_1_fastqc.zip",
@@ -52,7 +52,7 @@ rule fastqc1:
     resources:
         mem_mb=32000, # MB
         partition="amilan",
-        slurm_extra="--nodes=10 --qos=normal --time=20:00:00 --ntasks=10 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+        slurm_extra="--nodes=1 --qos=normal --time=20:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
     threads: 16
     params:
         fastqc1=config['fastqc1']
@@ -67,27 +67,31 @@ rule fastqc1:
 rule multiqc1:
     input:
         #directory(f"{config['fastqc1']}")
-        expand(f"{config['fastqc1']}{{sample}}{{sample}}_1_fastqc.zip", sample=samples),
-        expand(f"{config['fastqc1']}{{sample}}{{sample}}_2_fastqc.zip", sample=samples)
+        F1=expand(f"{config['fastqc1']}{{sample}}{{sample}}_1_fastqc.zip", sample=samples),
+        F2=expand(f"{config['fastqc1']}{{sample}}{{sample}}_2_fastqc.zip", sample=samples)
     output:
-        directory(f"{config['fastqc1']}{{multiqc_data}}"),
-        f"{config['fastqc1']}{{multiqc_report}}.html"
+        #directory(f"{config['fastqc1']}{{multiqc_data}}"),
+        #f"{config['fastqc1']}{{multiqc_report}}.html",
+        html=f"{config['fastqc1']}multiqc_report.html",
+        #data=directory(f"{config['fastqc1']}multiqc_data")
     resources:
         mem_mb=32000, # MB
         partition="amilan",
-        slurm_extra="--nodes=10 --qos=normal --time=20:00:00 --ntasks=10 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+        slurm_extra="--nodes=1 --qos=normal --time=20:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
     threads: 16
     params:
         fastqc1=config['fastqc1']
     shell:
         """
-        multiqc {params.fastqc1} -o {params.fastqc1}
+        cd {params.fastqc1}
+        multiqc .
+        # multiqc {params.fastqc1} -o {params.fastqc1}
         """
 
 rule trim_and_adapters:
     input:
-        FORWARD=f"{config['data_dir']}{{sample}}_1.fq.gz",
-        REVERSE=f"{config['data_dir']}{{sample}}_2.fq.gz"
+        FORWARD=expand(f"{config['data_dir']}{{sample}}_1.fq.gz", sample=samples),
+        REVERSE=expand(f"{config['data_dir']}{{sample}}_2.fq.gz", sample=samples)
     output:
         #expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
         #expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_2P", sample=samples),
@@ -97,9 +101,9 @@ rule trim_and_adapters:
     conda:
         "trimmomatic_env"
     resources:
-        mem_mb=64000, # MB
+        mem_mb=80000, # MB
         partition="amilan",
-        slurm_extra="--nodes=10 --qos=normal --time=20:00:00 --ntasks=20 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+        slurm_extra="--nodes=1 --qos=normal --time=20:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
     threads: 16
     params:
         trimout=config['trim_adapters'],
