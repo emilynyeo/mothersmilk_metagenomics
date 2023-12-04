@@ -15,13 +15,13 @@ rule all:
         expand(f"{config['out_dir']}test/{{sample}}_1.txt", sample=samples),
         expand(f"{config['out_dir']}test/{{sample}}_2.txt", sample=samples),
     # fastqc1 output:
-        expand(f"{config['fastqc1']}{{sample}}", sample=samples)
+        expand(f"{config['fastqc1']}{{sample}}", sample=samples),
     # multiqc output:
-        directory(f"{config['fastqc1']}{{multiqc_report}}")
+        f"{config['fastqc1']}{{multiqc_report}}.html",
     # trim adapters:
         expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
-        expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed_2P", sample=samples),
-        expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed", sample=samples),
+        expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_2P", sample=samples),
+        expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed", sample=samples),
     
 rule test:
     input:
@@ -45,8 +45,8 @@ rule fastqc1:
         REVERSE=f"{config['data_dir']}{{sample}}_2.fq.gz"
     output:
         directory(f"{config['fastqc1']}{{sample}}"),
-        f"{config['data_dir']}{{sample}}_1_fastqc.zip,
-        f"{config['data_dir']}{{sample}}_2_fastqc.zip
+        f"{config['fastqc1']}{{sample}}_1_fastqc.zip",
+        f"{config['fastqc1']}{{sample}}_2_fastqc.zip"
     conda:
         "qc_env_with_fastqc_and_multiqc"
     resources:
@@ -67,10 +67,11 @@ rule fastqc1:
 rule multiqc1:
     input:
         #directory(f"{config['fastqc1']}")
-        expand(f"{config['fastqc1']}{{sample}}{{sample}}_1_fastqc.zip", sample=SAMPLES),
-        expand(f"{config['fastqc1']}{{sample}}{{sample}}_2_fastqc.zip", sample=SAMPLES)
+        expand(f"{config['fastqc1']}{{sample}}{{sample}}_1_fastqc.zip", sample=samples),
+        expand(f"{config['fastqc1']}{{sample}}{{sample}}_2_fastqc.zip", sample=samples)
     output:
-        directory(f"{config['fastqc1']}{{multiqc_report}}")
+        directory(f"{config['fastqc1']}{{multiqc_data}}"),
+        f"{config['fastqc1']}{{multiqc_report}}.html"
     resources:
         mem_mb=32000, # MB
         partition="amilan",
@@ -80,17 +81,19 @@ rule multiqc1:
         fastqc1=config['fastqc1']
     shell:
         """
-        multiqc {params.fastqc1} -o {params.fastqc1}multiqc_report
+        multiqc {params.fastqc1} -o {params.fastqc1}
         """
-rule trim_and_adapters
+
+rule trim_and_adapters:
     input:
         FORWARD=f"{config['data_dir']}{{sample}}_1.fq.gz",
         REVERSE=f"{config['data_dir']}{{sample}}_2.fq.gz"
     output:
-        expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
-        expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed_2P", sample=samples),
-        expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed", sample=samples),
+        #expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
+        #expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_2P", sample=samples),
+        #expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed", sample=samples),
         #expand(f"{config.out_dir}trimmed_output/{{sample}}/{{sample}}.trimmed_2U", sample=samples),
+        directory(f"{config['trim_adapters']}{{sample}}")
     conda:
         "trimmomatic_env"
     resources:
@@ -101,14 +104,13 @@ rule trim_and_adapters
     params:
         trimout=config['trim_adapters'],
         flops=config['flops'],
-        min=config['min_readlen']
-        lead=config['leading']
-        trail=config['trailing']
-        swindow=config['swindow']
-        adapters=config['adapters']
+        min=config['min_readlen'],
+        lead=config['leading'],
+        trail=config['trailing'],
+        swindow=config['swindow'],
+        adapters=config['adapters'],
     shell:
         """
-        mkdir -p {params.trimout}
         touch {params.flops}
         mkdir -p {params.trimput}{wildcards.sample}
         trimmomatic PE -threads 16 \
