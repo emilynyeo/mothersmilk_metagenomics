@@ -64,6 +64,7 @@ rule fastqc1:
         fastqc --threads 1 {input.FORWARD} {input.REVERSE} -o {output} \
             || echo {wildcards.sample} >> {params.fastqc1}failures.txt
         """
+        
 rule multiqc1:
     input:
         #directory(f"{config['fastqc1']}")
@@ -72,7 +73,7 @@ rule multiqc1:
     output:
         #directory(f"{config['fastqc1']}{{multiqc_data}}"),
         #f"{config['fastqc1']}{{multiqc_report}}.html",
-        html=f"{config['fastqc1']}multiqc_report.html",
+        html=f"{config['fastqc1']}multiqc_report.html"
         #data=directory(f"{config['fastqc1']}multiqc_data")
     resources:
         mem_mb=2000, # MB

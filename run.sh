@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-#SBATCH -p short
+#SBATCH -p amilan
 #SBATCH --job-name=example
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=4

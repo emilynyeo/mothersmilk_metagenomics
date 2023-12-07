@@ -14,32 +14,21 @@ echo $config
 smk_dir=$main_dir
 log=$out_dir'log/ind_log.txt'
 
-# ADD TO THE README FOR INITIAL SETUP - this needs to be editted/removed
-# for singularity container 
-#. /opt/conda/etc/profile.d/conda.sh
-# load conda and activate snakemake env for run
-# module load anaconda
-#.~/miniconda3/bin/conda
-#conda_dir="/home/sdp/miniconda3/envs/"
-#source ~/miniconda3/etc/profile.d/mamba.sh 
-#export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:~/miniconda3/condabin/conda
-#conda activate quality
-
-# activate conda / mamba (PUT AN EG OF OUR BASHRC ON REPO)
-# source  ~/.bashrc
-# source ~/miniconda3/bin/activate
-# conda activate quality
 echo 'Going to project directory...'
 cd $main_dir
 
 # runnning MM pipeline
 echo 'running MM pipeline' > $log
 start_slice=$(date +%s.%3N)
-snakemake \
-    -s snakefile \
+snakemake -s snakefile \
+    --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
+    --configfile src/ems_config.yaml \
+    --use-conda \
     -c 1 \
     -j 1 \
-    --configfile=$ems_config
+    --dryrun \
+    --printshellcmds
 end_slice=$(date +%s.%3N)
 slice_time=$(echo "scale=3; $end_slice - $start_slice" | bc)
 echo "QC: $slice_time seconds" >> $log
+#--configfile=$ems_config \
