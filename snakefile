@@ -50,10 +50,10 @@ rule fastqc1:
     conda:
         "qc_env_with_fastqc_and_multiqc"
     resources:
-        mem_mb=32000, # MB
+        mem_mb=2000, # MB
         partition="amilan",
         slurm_extra="--nodes=1 --qos=normal --time=20:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
-    threads: 16
+    threads: 1
     params:
         fastqc1=config['fastqc1']
     shell:
@@ -61,7 +61,7 @@ rule fastqc1:
         mkdir -p {params.fastqc1}
         touch {params.fastqc1}failures.txt
         mkdir -p {output}
-        fastqc --threads 16 {input.FORWARD} {input.REVERSE} -o {output} \
+        fastqc --threads 1 {input.FORWARD} {input.REVERSE} -o {output} \
             || echo {wildcards.sample} >> {params.fastqc1}failures.txt
         """
 rule multiqc1:
@@ -75,10 +75,10 @@ rule multiqc1:
         html=f"{config['fastqc1']}multiqc_report.html",
         #data=directory(f"{config['fastqc1']}multiqc_data")
     resources:
-        mem_mb=32000, # MB
+        mem_mb=2000, # MB
         partition="amilan",
         slurm_extra="--nodes=1 --qos=normal --time=20:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
-    threads: 16
+    threads: 1
     params:
         fastqc1=config['fastqc1']
     shell:
@@ -101,10 +101,10 @@ rule trim_and_adapters:
     conda:
         "trimmomatic_env"
     resources:
-        mem_mb=80000, # MB
+        mem_mb=2000, # MB
         partition="amilan",
         slurm_extra="--nodes=1 --qos=normal --time=20:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
-    threads: 16
+    threads: 1
     params:
         trimout=config['trim_adapters'],
         flops=config['flops'],
@@ -117,7 +117,7 @@ rule trim_and_adapters:
         """
         touch {params.flops}
         mkdir -p {params.trimput}{wildcards.sample}
-        trimmomatic PE -threads 16 \
+        trimmomatic PE -threads 1 \
             -trimlog {params.trimput}{wildcards.sample}/{wildcards.sample}.trimlog \
             -summary {params.trimput}{wildcards.sample}/{wildcards.sample}.trim.log \
             -validatePairs {input.FORWARD} {input.REVERSE} \

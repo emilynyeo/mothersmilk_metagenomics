@@ -39,7 +39,7 @@ snakemake \
     -s snakefile \
     -c 1 \
     -j 1 \
-    --configfile=$config
+    --configfile=$ems_config
 end_slice=$(date +%s.%3N)
 slice_time=$(echo "scale=3; $end_slice - $start_slice" | bc)
 echo "QC: $slice_time seconds" >> $log

@@ -1,33 +1,46 @@
-# Root directory for the project
-ROOT: .
 
 ### modify these paths for each computer setup each time
 
 main_dir:
-  /pl/active/ADOR/projects/mothersmilk/mm_pipeline/
+  /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/
 data_dir:
   /pl/active/ADOR/projects/mothersmilk/chla_data_transfer/fastq/fastq/
 out_dir:
-  /Users/emye7956/research/projects/Group-6-Metagenomic-Pipeline/doc/
+  /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/doc/
 sample_IDs:
-  /pl/active/ADOR/projects/mothersmilk/mm_pipeline/sample_names.txt
+  /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/sample_names_long.txt
 
 # Project name
 PROJ: test
 
 # Metadata file
-METADATA: tests/example_metadata.csv
+METADATA: doc/mothersmilk_metadata.csv
 fwd_reads_path: forward_reads
 rev_reads_path: reverse_reads
 
 ################################################
+### Fastqc ###
+fastqc1:
+  /pl/active/ADOR/projects/mothersmilk/fastqc1/fastqc1_output_new/
+
+################################################
 ### TRIMMOMATIC ADAPTER AND QUALITY TRIMMING ###
+trim_adapters:
+  /pl/active/ADOR/projects/mothersmilk/trimming/noadapters_trim_output_new/
 # minimum read length after trimming
 min_readlen: 50
 # the minimum quality for the start of a read. If it's below this quality, trim that base pair
-readstart_qual_min: 20
+leading: 20
 # the minimum quality for the end of a read. If it's below this quality, trim that base pair
-readend_qual_min: 20
+trailing: 20
+# Sliding window is ...
+swindow: 4:20
+# The adapter sequences to remove
+adapters:
+  /pl/active/ADOR/projects/mothersmilk/trimming/adapters.fasta:2:30:10
+flops:
+  /pl/active/ADOR/projects/mothersmilk/trimming/noadapters_trim_output_new/failures.txt
+
 
 ######################
 ### SEQTK TRIMMING ###
@@ -82,10 +95,10 @@ kraken_db: data/kraken2_db
 # rule_name_threads: 8 
 
 # fastq_rule
-bbmap_host_partition: long
-bbmap_host_runtime: 2160 # 36 hours
-bbmap_host_threads: 48
-bbmap_host_mem_mb: 250000
+fastqc_partition: amilan
+fastqc_runtime: 600 # 10 hours
+fastqc_threads: 10
+fastqc_mem_mb: 50000
 
 ################################
 ### Partition ###
@@ -105,8 +118,11 @@ default_long_partition_name: long
 # Rule-specific parameters are prioritized over default params.
 # These parameters should be a space-separated list, formatted as
 # <slurm_long_name>=<parameter> <slurm_long_name_2>=<parameter_2>
-# examples:
-# default_slurm_extra: email=sample_email@colorado.edu
+# for all rules:
+default_slurm_extra: email=emye7956@colorado.edu
+
+# for specific rules:
+
 # bbmap_host_slurm_extra: qos=long email=sample_email@colorado.edu
 # All rules would receive the email param, 
 # and the bbmap host rule would also receive the qos param

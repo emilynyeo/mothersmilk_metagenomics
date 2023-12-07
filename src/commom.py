@@ -15,6 +15,10 @@ bash $index_script $main_dir $out_dir $config_file
 
 # run snakemake using the cookiecutter profile
 snakemake --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
-    --configfile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm/ems_config.yaml \
+    --configfile src/ems_config.yaml \
     --use-conda \
-    --dryrun
+    --dryrun \
+    --printshellcmds
+
+    --dryrun --printshellcmds
+    --dag | dot -Tpng > dag.png
