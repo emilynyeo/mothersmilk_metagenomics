@@ -16,17 +16,21 @@ log=$out_dir'log/ind_log.txt'
 
 echo 'Going to project directory...'
 cd $main_dir
+#echo 'Activating snakemake conda env ...'
+#conda activate snakemake
 
 # runnning MM pipeline
 echo 'running MM pipeline' > $log
 start_slice=$(date +%s.%3N)
-snakemake -s snakefile \
+snakemake -s snakefile_test \
     --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
     --configfile src/ems_config.yaml \
     --use-conda \
-    -c 1 \
+    --verbose \
+    -c 10 \
     -j 1 \
     --dryrun \
+    --quiet \
     --printshellcmds
 end_slice=$(date +%s.%3N)
 slice_time=$(echo "scale=3; $end_slice - $start_slice" | bc)

@@ -1,13 +1,12 @@
-#!/usr/bin/env bash
-
-#SBATCH -p amilan
-#SBATCH --job-name=example
+#!/bin/bash
 #SBATCH --nodes=1
-#SBATCH --ntasks-per-node=4
-#SBATCH --mem=32gb
-#SBATCH --time=23:00:00
+#SBATCH --time=15:00:00
+#SBATCH --partition=amilan
+#SBATCH --qos=normal
+#SBATCH --job-name=test_runs
+#SBATCH --ntasks=10
 #SBATCH --mail-type=NONE
-#SBATCH --mail-user=emye7956@email.com
+#SBATCH --mail-user=emye7956@colorado.edu
 
 set -e pipefail
 
@@ -17,9 +16,9 @@ set -e pipefail
 index_script=src/index.sh # This has the snakefile instructions
 
 # directories
-main_dir="/pl/active/ADOR/projects/mothersmilk/mm_pipeline/"
-out_dir="/pl/active/ADOR/projects/mothersmilk/mm_pipeline/doc/"
-config_dir="/pl/active/ADOR/projects/mothersmilk/mm_pipeline/src/"
+main_dir="/pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/"
+out_dir="/pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/doc/"
+config_dir="/pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/src/"
 
 # config file
 config_file=$config_dir'config.yml' # This file also needs unique path changes prior
