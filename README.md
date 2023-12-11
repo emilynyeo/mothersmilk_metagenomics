@@ -13,12 +13,13 @@ This is seriously useful and something I figured out way too late, at it allows 
   1. Navigate to Github in your browser
   2. Select your icon in the top right corner, and then select 'Settings'
   3. On the left side, scroll down to 'Developer Settings'
-  4. Select 'Personal Access Tokens' and then 'Tokens (Classic)'
+  4. Select 'Personal Access Tokens' and then 'Tokens (Classic)'. Select all the boxes.
   5. From there, you can generate a new token. Once the token is generated, you'll want to use the 'HTTPS' option when cloning a repo.
   6. Whenever you're prompted for a password, you'll want to input the personal access token.
   7. Then once you're changes are commited and you'd like to push, use:
          `git remote -v`
          `git remote set-url origin https://insert_token_here@github.com/github_name/repo_name.git`
+         `git remote set-url origin https://insert_token_here@github.com/emilynyeo/mothersmilk_metagenomics.git`
          `git push` 
 
 ## Cloning repo
