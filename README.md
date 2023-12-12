@@ -4,7 +4,7 @@ Metagenomic processing of Mothersmilk cohort samples
 ## 1. Logging onto the cluster
 You will need duo mobile set up and have internet connection on your. If you are using the CU Boulder Fiji cluster, you will need to be on the VPN if you are not on campus wifi. If using Alping and the Peta Library, use `ssh emye7956@login.rc.colorado.edu` (replace my user ID with yours). Then get to the project directory using `cd /pl/active/ADOR/projects/mothersmilk/`. Everything you need to know about the CU Boulder clusters can be found [here](https://curc.readthedocs.io).
 
-#### IMPORTANT
+#### IMPORTANT !!!
 Once logged on, you'll be on a login node of the cluster. This is not a powerful node and is not the place to download or run things. It's ok for checking up on prior submitted jobs, submitting jobs (sometimes) and making small script edits. If you want to play with the more powerful nodes, there are a few options [(see here)](https://curc.readthedocs.io/en/latest/running-jobs/job-resources.html) that will take too long to get into. But I usually use `acompile --time=02:00:00` ... if I want a node for 2 hours. By default this puts you on an Amilan node with 1 core and 3GB of memory. So ask for more if you plan to exceed that when testing things. All metagenomic tools will require more resources. These you specify when submitting jobs [(see here)](https://curc.readthedocs.io/en/latest/running-jobs/batch-jobs.html). Be careful with this, because you can break a node if you run something without enought resources. When in doubt, email your questions in detail to `rc-help@colorado.edu` or lookup their weekly office hours. They are always SO awesome and helpful. 
 
 ## 2. Connecting to github
