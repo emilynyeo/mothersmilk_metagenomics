@@ -33,7 +33,7 @@ Most of metagenomics opperate in seperate environments so that they play nicely 
 
 So after cloning this repo, go to the main directory of the repo and type `conda env create -f env/snakemake.yaml` followed by `conda activate snakemake`. Your should see "(snakemake)" on the left of your cursor and username.
 
-## Snakemake
+## 4. Snakemake
 Our hero... sometimes. [Here](https://sterrettjd.github.io/Effective-Snakemake-HPC/) is a great intro made by John Sterrett. His github is also super helpful. I also reccomend taking a look at the [snakemake manual](https://snakemake.readthedocs.io/en/stable/). 
 But to get going with this, let's set up a snakemake profile. The steps to follow are [here](https://sterrettjd.github.io/Effective-Snakemake-HPC/quarto/Snakemake-Essentials.html).
 
