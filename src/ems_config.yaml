@@ -22,11 +22,13 @@ rev_reads_path: reverse_reads
 ### Fastqc ###
 fastqc1:
   /pl/active/ADOR/projects/mothersmilk/fastqc1/fastqc1_output_new/
+fastqc2:
+  /pl/active/ADOR/projects/mothersmilk/fastqc2/
 
 ################################################
 ### TRIMMOMATIC ADAPTER AND QUALITY TRIMMING ###
 trim_adapters:
-  /pl/active/ADOR/projects/mothersmilk/trimming/noadapters_trim_output_new/test/
+  /pl/active/ADOR/projects/mothersmilk/trimming/noadapters_trim_output_new/TEST/
 # minimum read length after trimming
 min_readlen: 50
 # the minimum quality for the start of a read. If it's below this quality, trim that base pair
@@ -39,7 +41,7 @@ swindow: 4:20
 adapters:
   /pl/active/ADOR/projects/mothersmilk/trimming/adapters.fasta:2:30:10
 flops:
-  /pl/active/ADOR/projects/mothersmilk/trimming/noadapters_trim_output_new/failures_test.txt
+  /pl/active/ADOR/projects/mothersmilk/trimming/noadapters_trim_output_new/TEST/failures_test.txt
 
 
 ############################
@@ -55,7 +57,7 @@ hostile_db: human-t2t-hla-argos985
 loc_for_hostile_db_download: data
 # Where you want the output to go:
 hostile_out:
-  /pl/active/ADOR/projects/mothersmilk/hostile/all/test/
+  /pl/active/ADOR/projects/mothersmilk/hostile/all/TEST/
 
 
 #################################

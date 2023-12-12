@@ -18,6 +18,8 @@ echo 'Going to project directory...'
 cd $main_dir
 #echo 'Activating snakemake conda env ...'
 #conda activate snakemake
+conda init bash
+conda activate snakemake
 
 # runnning MM pipeline
 echo 'running MM pipeline' > $log

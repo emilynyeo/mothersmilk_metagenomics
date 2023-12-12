@@ -162,6 +162,7 @@ rule fastqc2:
         """
 
 #rule humann:
-
+#rule kraken:
+#rule braken:
 
         

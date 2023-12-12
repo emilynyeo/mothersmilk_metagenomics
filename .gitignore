@@ -3,4 +3,5 @@ logs
 .snakemake
 *out
 slurm*
+dags
 
