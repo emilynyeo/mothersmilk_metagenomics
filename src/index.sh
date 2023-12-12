@@ -17,8 +17,8 @@ log=$out_dir'log/ind_log.txt'
 echo 'Going to project directory...'
 cd $main_dir
 #echo 'Activating snakemake conda env ...'
-#conda activate snakemake
-conda init bash
+module purge
+module load anaconda
 conda activate snakemake
 
 # runnning MM pipeline
@@ -28,7 +28,6 @@ snakemake -s snakefile_test \
     --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
     --configfile src/ems_config.yaml \
     --use-conda \
-    --verbose \
     -c 10 \
     -j 1 \
     --dryrun \

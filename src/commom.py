@@ -11,6 +11,8 @@ ssh-add /home/emye7956/.ssh/id_rsa
 salloc --nodes=1 --ntasks=10 --cpus-per-task=1 --mem=3000 --time=03:00:00
 sinteractive --partition=amilan --nodes=1 --time=02:10:00 --ntasks=1 --mem=3000
 
+# want to check up on a job:
+squeue --account=emye7956
 
 # run snakemake manually from the main dir if you want to use the index script
 main_dir="/pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/"
@@ -33,7 +35,7 @@ snakemake -s snakefile_test \
     --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
     --configfile src/ems_config.yaml \
     --use-conda \
-    --allowed-rules trim_and_adapters \
+    --allowed-rules test \
     -c 1 \
     -j 1 \
     --dryrun \

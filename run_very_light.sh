@@ -4,7 +4,7 @@
 #SBATCH --partition=amilan
 #SBATCH --qos=normal
 #SBATCH --job-name=test_runs
-#SBATCH --ntasks=1
+#SBATCH --ntasks=10
 #SBATCH --mail-type=NONE
 #SBATCH --mail-user=emye7956@colorado.edu
 
