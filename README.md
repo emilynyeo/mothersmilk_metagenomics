@@ -19,13 +19,10 @@ This is seriously useful and something I figured out way too late, at it allows 
   7. Then once you're changes are commited and you'd like to push, use:
 
 ```
-         git remote -v
-     
-         git remote set-url origin https://insert_token_here@github.com/github_name/repo_name.git
-     
-         git remote set-url origin https://insert_token_here@github.com/emilynyeo/mothersmilk_metagenomics.git
-     
-         git push 
+git remote -v     
+git remote set-url origin https://insert_token_here@github.com/github_name/repo_name.git     
+git remote set-url origin https://insert_token_here@github.com/emilynyeo/mothersmilk_metagenomics.git     
+git push 
 ```
 ## Cloning repo
 Pretty simple. Go to where you want the github directory to appear and type 'git clone <https_link>`.
