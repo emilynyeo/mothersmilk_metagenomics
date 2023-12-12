@@ -20,8 +20,9 @@ This is seriously useful and something I figured out way too late, at it allows 
 
 ```
 git remote -v     
-git remote set-url origin https://insert_token_here@github.com/github_name/repo_name.git     
-git remote set-url origin https://insert_token_here@github.com/emilynyeo/mothersmilk_metagenomics.git     
+git remote set-url origin https://insert_token_here@github.com/github_name/repo_name.git
+# example below    
+# git remote set-url origin https://insert_token_here@github.com/emilynyeo/mothersmilk_metagenomics.git     
 git push 
 ```
 ## Cloning repo
