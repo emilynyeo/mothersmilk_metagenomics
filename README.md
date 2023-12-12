@@ -31,7 +31,12 @@ Pretty simple. Go to where you want the github directory to appear and type 'git
 ## 3. Setting up environments 
 Most of metagenomics opperate in seperate environments so that they play nicely together.  If you are not sure which environments you have, type `conda env list` to get an idea. You can export an environment into a yaml file, so that someone can then reproduce that exact same environment on their own computer. All the environments for the mothersmilk metagenomic pipeline have been saved and are ready rumble. 
 
-So after cloning this repo, go to the main directory of the repo and type `conda env create -f env/snakemake.yaml` followed by `conda activate snakemake`. Your should see "(snakemake)" on the left of your cursor and username.
+So after cloning this repo, if you don't have conda environments set up, go to the main directory of the repo and type:
+```
+conda env create -f env/snakemake.yaml
+conda activate snakemake
+```
+Your should see "(snakemake)" on the left of your cursor and username.
 
 ## 4. Snakemake
 Our hero... sometimes. [Here](https://sterrettjd.github.io/Effective-Snakemake-HPC/) is a great intro made by John Sterrett. His github is also super helpful. I also reccomend taking a look at the [snakemake manual](https://snakemake.readthedocs.io/en/stable/). 
