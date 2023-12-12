@@ -52,13 +52,17 @@ pipx ensurepath
 In your Snakemake Conda environment:
 
 #### create config directory that snakemake searches for profiles (or use something else)
-MAIN="/pl/active/ADOR/projects/mothersmilk/mm_pipeline/" 
+```
+MAIN="/pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/" 
 profile_dir="${MAIN}/.config/snakemake"
 mkdir -p "$profile_dir"
+```
 
 #### use cookiecutter to create the profile in the config directory
+```
 template="gh:Snakemake-Profiles/slurm"
 cookiecutter --output-dir "$profile_dir" "$template"
+```
 
 ## Running Snakemake.
 Before staring, check to see if path and parameters need to be changed in `run.sh` and `src/index.sh` and `src/ems_config.yaml`. I actually recommend making your own config and referencing it in the index and run files. 
