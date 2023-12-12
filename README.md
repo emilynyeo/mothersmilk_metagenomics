@@ -69,9 +69,25 @@ Before staring, check to see if path and parameters need to be changed in `run.s
 
 Do you want to do a demo run or a full blown run? ... Probably demo. This can be done in 2 ways, but I recommend the sbatch way (way 2 below), just because it better mimics what would actually happen and you can ask for more resources. 
 
-  **way1:** 
-
+  **way1:** Directly on a compile/sinteractive node
+  
+  You'll need to be on a node. You'll need change the config path below.
+  ```
+  snakemake -s snakefile_test \
+    --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
+    --configfile src/ems_config.yaml \
+    --use-conda \
+    --verbose \
+    -c 1 \
+    -j 1 \
+    --dryrun \
+    --quiet
+  ```
   **way2:**
+
+  ```
+  sbatch run_very_light.sh
+  ```
 
 ## About the Rules being Run.
 
