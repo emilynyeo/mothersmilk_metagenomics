@@ -72,7 +72,8 @@ Do you want to do a demo run or a full blown run? ... Probably demo. This can be
   **way1:** Directly on a compile/sinteractive node
   
   You'll need to be on a node. You'll need change the config path below.
-  ```
+
+```
   snakemake -s snakefile_test \
     --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
     --configfile src/ems_config.yaml \
@@ -82,12 +83,12 @@ Do you want to do a demo run or a full blown run? ... Probably demo. This can be
     -j 1 \
     --dryrun \
     --quiet
-  ```
+```
   **way2:**
 
-  ```
-  sbatch run_very_light.sh
-  ```
+```
+sbatch run_very_light.sh
+```
 
 ## About the Rules being Run.
 
