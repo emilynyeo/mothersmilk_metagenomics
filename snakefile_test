@@ -24,11 +24,11 @@ rule all:
         expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
         expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_2P", sample=samples),
     # hostile:
-    #    expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
-    #    expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples),
+        expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
+        expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples),
     # fastqc2:
-    #    expand(f"{config['fastqc2']}{{sample}}.trimmed_1P.clean_1_fastqc.zip", sample=samples),
-    #    expand(f"{config['fastqc2']}{{sample}}.trimmed_2P.clean_2_fastqc.zip", sample=samples)
+        expand(f"{config['fastqc2']}{{sample}}.trimmed_1P.clean_1_fastqc.zip", sample=samples),
+        expand(f"{config['fastqc2']}{{sample}}.trimmed_2P.clean_2_fastqc.zip", sample=samples)
 
 rule test:
     input:
@@ -112,56 +112,97 @@ rule trim_and_adapters:
         echo "completed adapter trimming of {wildcards.sample}"
         """ 
 
-#rule hostile:
-#    input:
-#        file_r1=expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
-#        file_r2=expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_2P", sample=samples)
-#    output:
-#        f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz",
-#        f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz"
-#    params:
-#        done=config['hostile_out']
-#    resources:
-#        mem_mb=200, # MB
-#        partition="amilan",
-#        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
-#    threads: 1
-#    conda:
-#        "hostile"
-#    shell:
-#        """
-#        mkdir {params.done}
-#        cd {params.done}
-#        hostile clean --fastq1 "$file_r1" --fastq2 "$file_r2"
-#        """
+rule hostile:
+    input:
+        file_r1=expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),#        file_r2=expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_2P", sample=samples)
+    output:
+        f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz",
+        f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz"
+    params:
+        done=config['hostile_out']
+    resources:
+        mem_mb=200, # MB
+        partition="amilan",
+        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+    threads: 1
+    conda:
+        "hostile"
+    shell:
+        """
+        mkdir {params.done}
+        cd {params.done}
+        hostile clean --fastq1 "$file_r1" --fastq2 "$file_r2"
+        """
 
-#rule fastqc2:
-#    input:
-#        FORWARD=expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
-#        REVERSE=expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples)
-#    output:
-#        directory(f"{config['fastqc2']}{{sample}}"),
-#        f"{config['fastqc2']}{{sample}}.trimmed_1P.clean_1_fastqc.zip",
-#        f"{config['fastqc2']}{{sample}}.trimmed_2P.clean_2_fastqc.zip"
-#    conda:
-#        "qc_env_with_fastqc_and_multiqc"
-#    resources:
-#        mem_mb=200, # MB
-#        partition="amilan",
-#        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
-#    threads: 1
-#    params:
-#        fastqc2=config['fastqc2']
-#    shell:
-#        """
-#        mkdir -p {params.fastqc2}
-#        touch {params.fastqc2}failures.txt
-#        mkdir -p {output}
-#        fastqc --threads 1 {input.FORWARD} {input.REVERSE} -o {output} \
-#            || echo {wildcards.sample} >> {params.fastqc2}failures.txt
-#        """
+rule fastqc2:
+    input:
+        FORWARD=expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
+        REVERSE=expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples)
+    output:
+        directory(f"{config['fastqc2']}{{sample}}"),
+        f"{config['fastqc2']}{{sample}}.trimmed_1P.clean_1_fastqc.zip",
+        f"{config['fastqc2']}{{sample}}.trimmed_2P.clean_2_fastqc.zip"
+    conda:
+        "qc_env_with_fastqc_and_multiqc"
+    resources:
+        mem_mb=200, # MB
+        partition="amilan",
+        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+    threads: 1
+    params:
+        fastqc2=config['fastqc2']
+    shell:
+        """
+        mkdir -p {params.fastqc2}
+        touch {params.fastqc2}failures.txt
+        mkdir -p {output}
+        fastqc --threads 1 {input.FORWARD} {input.REVERSE} -o {output} \
+            || echo {wildcards.sample} >> {params.fastqc2}failures.txt
+        """
 
-#rule humann:
+rule concatenate:
+    input:
+        #TRIMMED1=data_dir + "{sample}_1P.clean_1.fastq.gz",
+        #TRIMMED2=data_dir + "{sample}_2P.clean_2.fastq.gz"
+        FORWARD=expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
+        REVERSE=expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples)
+    output:
+        #catfile=data_dir + "{sample}_1P.cleancombined.fastq.gz",
+        catfile=f"{config['hostile_out']}{{sample}}_1P.cleancombined.fastq.gz"
+    shell:
+        """
+        if [ ! -f {output.catfile} ]; then
+            cat {input.FORWARD} {input.REVERSE} > {output.catfile}
+        else
+            echo 'Combined file {output.catfile} already exists. Skipping combination.'
+        fi
+        """
+
+rule humann:
+    input:
+        catfile=f"{config['hostile_out']}{{sample}}_1P.cleancombined.fastq.gz"
+    outuput:
+        genefamilies=f"{config['humann_out']}{{sample}}_genefamilies.tsv",
+        pathabundance=f"{config['humann_out']}{{sample}}_pathabundance.tsv",
+        pathcoverage=f"{config['humann_out']}{{sample}}_pathcoverage.tsv",
+        metaphlan_bugs_list=f"{config['humann_out']}{{sample}}_humann_temp/{{sample}}_metaphlan_bugs_list.tsv"
+    conda:
+        "humann_env"
+    resources:
+        mem_mb=200, # MB
+        partition="amilan",
+        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+    threads: 1
+    params:
+    shell:
+        """
+        fpathc={input.catfile}
+
+        humann --protein-database "{params.protein_db}" \
+            --nucleotide-database "{params.nucleotide_db}" \
+            --input "$fpathc" \
+            --output "{output_dir}"
+        """
 #rule kraken:
 #rule braken:
 

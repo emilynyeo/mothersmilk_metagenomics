@@ -16,7 +16,7 @@ rule all:
     # test output:
     input:
         expand(f"{config['out_dir']}test/{{sample}}_1.txt", sample=samples),
-        expand(f"{config['out_dir']}test/{{sample}}_2.txt", sample=samples
+        expand(f"{config['out_dir']}test/{{sample}}_2.txt", sample=samples)
         
 rule test:
     input:

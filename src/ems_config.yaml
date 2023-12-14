@@ -67,11 +67,13 @@ hostile_out:
 metaphlan_bowtie_db: data/metaphlan_db/
 
 # Paths to Chocophlan and UniRef databases for HUMAnN
-# If these aren't already downloaded, HoMi will download them
-chocophlan_db: data/humann_dbs/chocophlan
-uniref_db: data/humann_dbs/uniref
+chocophlan_db: /projects/emye7956/software/anaconda/envs/humann_env/chocophlan/
+uniref_db: /projects/emye7956/software/anaconda/envs/humann_env/uniref/
 utility_mapping_db: data/humann_dbs/utility_mapping 
 
+# Where should humann output files go
+humann_out: 
+  /pl/active/ADOR/projects/mothersmilk/human_after_hostile/
 
 ########################
 ### Kraken + Bracken ###
