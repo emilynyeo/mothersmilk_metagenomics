@@ -29,6 +29,8 @@ git push
 Pretty simple. Go to where you want the github directory to appear and type 'git clone <https_link>`.
 
 ## 3. Setting up environments 
+if this is your first time, you may need to FIRST get on a compute node, and then type `module load anaconda`.
+
 Most of metagenomics opperate in seperate environments so that they play nicely together.  If you are not sure which environments you have, type `conda env list` to get an idea. You can export an environment into a yaml file, so that someone can then reproduce that exact same environment on their own computer. All the environments for the mothersmilk metagenomic pipeline have been saved and are ready rumble. 
 
 So after cloning this repo, if you don't have conda environments set up, go to the main directory of the repo and type:
