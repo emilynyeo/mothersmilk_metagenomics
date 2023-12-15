@@ -28,7 +28,7 @@ snakemake -s snakefile_test \
     --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
     --configfile src/ems_config.yaml \
     --use-conda \
-    -c 10 \
+    -c 2 \
     -j 1 \
     --dryrun \
     --quiet \

@@ -15,11 +15,11 @@ duplicate_samples = [sample for sample in set(samples) if samples.count(sample) 
 rule all:
     # test output:
     input:
-        expand(f"{config['out_dir']}test/{{sample}}_1.txt", sample=samples),
-        expand(f"{config['out_dir']}test/{{sample}}_2.txt", sample=samples),
+    #    expand(f"{config['out_dir']}test/{{sample}}_1.txt", sample=samples),
+    #    expand(f"{config['out_dir']}test/{{sample}}_2.txt", sample=samples),
     # fastqc1 output:
-        expand(f"{config['fastqc1']}{{sample}}_1_fastqc.zip", sample=samples),
-        expand(f"{config['fastqc1']}{{sample}}_2_fastqc.zip", sample=samples),
+    #    expand(f"{config['fastqc1']}{{sample}}_1_fastqc.zip", sample=samples),
+    #    expand(f"{config['fastqc1']}{{sample}}_2_fastqc.zip", sample=samples),
     # trimming:
         expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_1P", sample=samples),
         expand(f"{config['trim_adapters']}{{sample}}/{{sample}}.trimmed_2P", sample=samples),
@@ -27,8 +27,15 @@ rule all:
         expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
         expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples),
     # fastqc2:
-        expand(f"{config['fastqc2']}{{sample}}.trimmed_1P.clean_1_fastqc.zip", sample=samples),
-        expand(f"{config['fastqc2']}{{sample}}.trimmed_2P.clean_2_fastqc.zip", sample=samples)
+    #    expand(f"{config['fastqc2']}{{sample}}.trimmed_1P.clean_1_fastqc.zip", sample=samples),
+    #    expand(f"{config['fastqc2']}{{sample}}.trimmed_2P.clean_2_fastqc.zip", sample=samples),
+    # catfiles:
+        expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.cleancombined.fastq.gz", sample=samples),
+    # humann :
+        expand(f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_genefamilies.tsv", sample=samples),
+        expand(f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_pathabundance.tsv", sample=samples),
+        expand(f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_pathcoverage.tsv", sample=samples),
+        expand(f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_humann_temp/{{sample}}.trimmed_1P.cleancombined_metaphlan_bugs_list.tsv", sample=samples)
 
 rule test:
     input:
@@ -109,7 +116,7 @@ rule trim_and_adapters:
 
         #mv {params.trimout}{wildcards.sample}/{wildcards.sample}.trimmed_1P {params.trimout}{wildcards.sample}/{wildcards.sample}.trimmed.R1.fq
         #mv {params.trimout}{wildcards.sample}/{wildcards.sample}.trimmed_2P {params.trimout}{wildcards.sample}/{wildcards.sample}.trimmed.R2.fq
-        echo "completed adapter trimming of {wildcards.sample}"
+        echo 'completed adapter trimming of {wildcards.sample}'
         """ 
 
 rule hostile:
@@ -131,7 +138,7 @@ rule hostile:
         """
         mkdir {params.done}
         cd {params.done}
-        hostile clean --fastq1 "$file_r1" --fastq2 "$file_r2"
+        hostile clean --fastq1 '$file_r1' --fastq2 '$file_r2'
         """
 
 rule fastqc2:
@@ -162,13 +169,15 @@ rule fastqc2:
 
 rule concatenate:
     input:
-        #TRIMMED1=data_dir + "{sample}_1P.clean_1.fastq.gz",
-        #TRIMMED2=data_dir + "{sample}_2P.clean_2.fastq.gz"
         FORWARD=expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
         REVERSE=expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples)
     output:
-        #catfile=data_dir + "{sample}_1P.cleancombined.fastq.gz",
-        catfile=f"{config['hostile_out']}{{sample}}_1P.cleancombined.fastq.gz"
+        catfile=f"{config['hostile_out']}{{sample}}.trimmed_1P.cleancombined.fastq.gz"
+    resources:
+        mem_mb=200, # MB
+        partition="amilan",
+        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+    threads: 1
     shell:
         """
         if [ ! -f {output.catfile} ]; then
@@ -180,12 +189,12 @@ rule concatenate:
 
 rule humann:
     input:
-        catfile=f"{config['hostile_out']}{{sample}}_1P.cleancombined.fastq.gz"
-    outuput:
-        genefamilies=f"{config['humann_out']}{{sample}}_genefamilies.tsv",
-        pathabundance=f"{config['humann_out']}{{sample}}_pathabundance.tsv",
-        pathcoverage=f"{config['humann_out']}{{sample}}_pathcoverage.tsv",
-        metaphlan_bugs_list=f"{config['humann_out']}{{sample}}_humann_temp/{{sample}}_metaphlan_bugs_list.tsv"
+        catfile=f"{config['hostile_out']}{{sample}}.trimmed_1P.cleancombined.fastq.gz"
+    output:
+        f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_genefamilies.tsv",
+        f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_pathabundance.tsv",
+        f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_pathcoverage.tsv",
+        f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_humann_temp/{{sample}}.trimmed_1P.cleancombined_metaphlan_bugs_list.tsv"
     conda:
         "humann_env"
     resources:
@@ -194,16 +203,51 @@ rule humann:
         slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
     threads: 1
     params:
+        humann_out=config['humann_out']
+        protein_db=config['uniref_db']
+        nucleotide_db=config['chocophlan_db']
     shell:
         """
         fpathc={input.catfile}
-
         humann --protein-database "{params.protein_db}" \
             --nucleotide-database "{params.nucleotide_db}" \
             --input "$fpathc" \
-            --output "{output_dir}"
+            --output "{params.humann_out}"
         """
-#rule kraken:
+
+rule kraken_process:
+    input:
+        forward=f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz",
+        reverse=f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz"
+    output:
+        output_report=f"{config['kraken_out']}{{sample}}.report.txt",
+        output_txt=f"{config['kraken_out']}{{sample}}.output.txt"
+    params:
+        processed_files=config['processed_kraken']
+        kraken_db=config['kraken_db']
+    shell:
+        """
+        base=$(basename {input.forward} .trimmed_1P.clean_1.fastq.gz)
+        base=${{base%%_*}}
+        suffix=$(echo {input.forward} | cut -d'_' -f2-4 | sed 's/\.trimmed//')
+        echo "${{base}}_${{suffix}}"
+
+        if ! grep -q "${{base}}" {params.processed_files}; then
+            echo "Running sample ${{base}}"
+            kraken2 --db {params.kraken_db} \\
+                --threads 40 \\
+                --output {output.output_txt} \\
+                --report {output.output_report} \\
+                --report-zero-counts \\
+                --gzip-compressed \\
+                --use-names \\
+                --paired {input.forward} {input.reverse}
+
+            echo "${{base}}" >> {params.processed_files}
+        else
+            echo "Skipping sample ${{base}} (already processed)"
+        fi
+        """
 #rule braken:
 
         
