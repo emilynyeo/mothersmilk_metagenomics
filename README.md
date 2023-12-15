@@ -72,16 +72,16 @@ cookiecutter --output-dir "$profile_dir" "$template"
 ```
 
 ## Running Snakemake.
-Before staring, check to see if path and parameters need to be changed in `run.sh` and `src/index.sh` and `src/ems_config.yaml`. I actually recommend making your own config and referencing it in the index and run files. 
+Before staring, check to see if path and parameters need to be changed in [`run.sh`](run_very_light.sh) and [`src/index.sh`] and [`src/ems_config.yaml`]. I actually recommend making your own config and referencing it in the index and run files. 
 
-Do you want to do a demo run or a full blown run? ... Probably demo. This can be done in 2 ways, but I recommend the sbatch way (way 2 below), just because it better mimics what would actually happen and you can ask for more resources. 
+Do you want to do a demo run or a full blown run? ... Probably demo. This can be done in 2 ways, but I recommend the sbatch way (way 2 below), just because it better mimics what would actually happen and you can ask for more resources. The [demo run](snakefile_demo) will simply make txt files of the input sample names. This is just so you can get an idea of how snakemake works. 
 
   **way1:** Directly on a compile/sinteractive node
   
   You'll need to be on a node. You'll need change the config path below.
 
 ```
-  snakemake -s snakefile_test \
+  snakemake -s snakefile_demo \
     --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
     --configfile src/ems_config.yaml \
     --use-conda \
