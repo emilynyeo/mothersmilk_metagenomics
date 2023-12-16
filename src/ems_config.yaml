@@ -74,6 +74,9 @@ utility_mapping_db: data/humann_dbs/utility_mapping
 # Where should humann output files go:
 humann_out: 
   /pl/active/ADOR/projects/mothersmilk/human_after_hostile/
+humann_out_december: 
+  /pl/active/ADOR/projects/mothersmilk/human_after_hostile/december/
+
 
 ########################
 ### Kraken + Bracken ###
@@ -86,6 +89,10 @@ kraken_out:
 # files to skip if already processed:
 processed_kraken:
   /pl/active/ADOR/projects/mothersmilk/kraken/kraken4bracken/k4b_processed_oct30.txt
+
+# where should processed Bracken go?
+bracken_out:
+  /pl/active/ADOR/projects/mothersmilk/kraken/kraken4bracken/
 
 ################################
 ### Resources ###

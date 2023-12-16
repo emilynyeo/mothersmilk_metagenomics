@@ -260,5 +260,36 @@ rule kraken:
         fi
         """
 #rule braken:
+    input:
+        k_report=f"{config['kraken_out']}{{sample}}.report.txt"
+    output:
+        b_reort=
+    conda:
+        "kraken2"
+    params:
+        kraken_db=config['kraken_db'],
+        kraken_out=config['kraken_out']
+        bracken_out=config['bracken_out']
+    resources:
+        mem_mb=200, # MB
+        partition="amilan",
+        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
+    threads: 1
+    shell:
+        """
+        mkdir -p {params.bracken_out}brack_reports
+        cd {params.bracken_out}
+
+        for infile in *.report.txt; do
+                SAMPLE=$(basename ${infile} .report.txt)
+                #echo "$SAMPLE"
+
+                bracken -d --db /pl/active/ADOR/projects/mothersmilk/kraken/kraken4bracken \
+                        -i ${SAMPLE}.report \
+                        -o brack_reports/${SAMPLE}.bracken \
+                        -l S\
+
+        done
+        """
 
         
