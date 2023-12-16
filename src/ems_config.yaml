@@ -57,7 +57,7 @@ hostile_db: human-t2t-hla-argos985
 loc_for_hostile_db_download: data
 # Where you want the output to go:
 hostile_out:
-  /pl/active/ADOR/projects/mothersmilk/hostile/all/TEST/
+  /pl/active/ADOR/projects/mothersmilk/hostile/all/
 
 
 #################################

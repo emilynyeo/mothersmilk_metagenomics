@@ -24,7 +24,7 @@ conda activate snakemake
 # runnning MM pipeline
 echo 'running MM pipeline' > $log
 start_slice=$(date +%s.%3N)
-snakemake -s snakefile_test \
+snakemake -s Snakefile_resources_nov24 \
     --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
     --configfile src/ems_config.yaml \
     --use-conda \
