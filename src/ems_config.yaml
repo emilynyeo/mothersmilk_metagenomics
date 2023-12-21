@@ -9,6 +9,8 @@ out_dir:
   /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/doc/
 sample_IDs:
   /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/sample_names_long.txt
+test_samples:
+  /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/test_samples.txt
 
 # Project name
 PROJ: test

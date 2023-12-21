@@ -7,7 +7,7 @@ from types import SimpleNamespace
 #config = SimpleNamespace(**config)
 
 # Read sample names from "sample_names.txt" made using src/sample_names.py prior to snakemake
-samples=read_samples_full(f"{config['sample_IDs']}")
+samples=read_samples_full(f"{config['test_samples']}")
 # Identify duplicates
 duplicate_samples = [sample for sample in set(samples) if samples.count(sample) > 1]
 
@@ -15,48 +15,49 @@ rule all:
     input:
         expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.cleancombined.fastq.gz", sample=samples),
     # humann :
-        expand(f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_genefamilies.tsv", sample=samples),
-        expand(f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_pathabundance.tsv", sample=samples),
-        expand(f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_pathcoverage.tsv", sample=samples),
-        expand(f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_humann_temp/{{sample}}.trimmed_1P.cleancombined_metaphlan_bugs_list.tsv", sample=samples)
+        expand(f"{config['humann_out_december']}{{sample}}.trimmed_1P.cleancombined_genefamilies.tsv", sample=samples),
+        expand(f"{config['humann_out_december']}{{sample}}.trimmed_1P.cleancombined_pathabundance.tsv", sample=samples),
+        expand(f"{config['humann_out_december']}{{sample}}.trimmed_1P.cleancombined_pathcoverage.tsv", sample=samples),
+        expand(f"{config['humann_out_december']}{{sample}}.trimmed_1P.cleancombined_humann_temp/{{sample}}.trimmed_1P.cleancombined_metaphlan_bugs_list.tsv", sample=samples)
 
 rule concatenate:
     input:
-        FORWARD=expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
-        REVERSE=expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples)
+        #FORWARD=expand(f"{config['hostile_out']}{{sample}}.trimmed_1P.clean_1.fastq.gz", sample=samples),
+        #REVERSE=expand(f"{config['hostile_out']}{{sample}}.trimmed_2P.clean_2.fastq.gz", sample=samples)
+        FORWARD="/pl/active/ADOR/projects/mothersmilk/hostile/all/{sample}.trimmed_1P.clean_1.fastq.gz",
+        REVERSE="/pl/active/ADOR/projects/mothersmilk/hostile/all/{sample}.trimmed_2P.clean_2.fastq.gz"
     output:
-        catfile=f"{config['hostile_out']}{{sample}}.trimmed_1P.cleancombined.fastq.gz"
+        #catfile=f"{config['hostile_out']}{{sample}}.trimmed_1P.cleancombined.fastq.gz"
+        catfile="/pl/active/ADOR/projects/mothersmilk/hostile/all/{sample}.trimmed_1P.cleancombined.fastq.gz"
+    params:
+        data_dir=config['hostile_out']
     resources:
-        mem_mb=200, # MB
+        mem_mb=3200, # MB
         partition="amilan",
-        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
-    threads: 1
+        slurm_extra="--nodes=1 --qos=normal --time=23:00:00 --ntasks=10 --mail-type=NONE --mail-user=emye7956@colorado.edu"
+    threads: 10
     shell:
         """
-        if [ ! -f {output.catfile} ]; then
-            cat {input.FORWARD} {input.REVERSE} > {output.catfile}
-        else
-            echo 'Combined file {output.catfile} already exists. Skipping combination.'
-        fi
+        cat {input.FORWARD} {input.REVERSE} > {output.catfile}
         """
 
 rule humann:
     input:
         catfile=f"{config['hostile_out']}{{sample}}.trimmed_1P.cleancombined.fastq.gz"
     output:
-        f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_genefamilies.tsv",
-        f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_pathabundance.tsv",
-        f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_pathcoverage.tsv",
-        f"{config['humann_out']}{{sample}}.trimmed_1P.cleancombined_humann_temp/{{sample}}.trimmed_1P.cleancombined_metaphlan_bugs_list.tsv"
+        f"{config['humann_out_december']}{{sample}}.trimmed_1P.cleancombined_genefamilies.tsv",
+        f"{config['humann_out_december']}{{sample}}.trimmed_1P.cleancombined_pathabundance.tsv",
+        f"{config['humann_out_december']}{{sample}}.trimmed_1P.cleancombined_pathcoverage.tsv",
+        f"{config['humann_out_december']}{{sample}}.trimmed_1P.cleancombined_humann_temp/{{sample}}.trimmed_1P.cleancombined_metaphlan_bugs_list.tsv"
     conda:
         "humann_env"
     resources:
-        mem_mb=200, # MB
+        mem_mb=6400, # MB
         partition="amilan",
-        slurm_extra="--nodes=1 --qos=normal --time=10:00:00 --ntasks=1 --mail-type=ALL --mail-user=emye7956@colorado.edu"
-    threads: 1
+        slurm_extra="--nodes=1 --qos=normal --time=23:00:00 --ntasks=20 --mail-type=NONE --mail-user=emye7956@colorado.edu"
+    threads: 20
     params:
-        humann_out=config['humann_out'],
+        humann_out_december=config['humann_out_december'],
         protein_db=config['uniref_db'],
         nucleotide_db=config['chocophlan_db']
     shell:
@@ -65,7 +66,7 @@ rule humann:
         humann --protein-database "{params.protein_db}" \
             --nucleotide-database "{params.nucleotide_db}" \
             --input "$fpathc" \
-            --output "{params.humann_out}" 
+            --output "{params.humann_out_december}" 
         
         rm {input.catfile}
         """
