@@ -104,4 +104,6 @@ sbatch run_very_light.sh
 
 see [here](https://emilyyeo.notion.site/MothersMilk-Metagenomics-Info-62930e8b108e4bd79dccee3ffc484d04#d7a7bb2cc69d40b1b47b50803f1460fd)
 
+Please checkout the sites for all the individual tools used in these processing steps (FastQC, Humann3, Kracken, Bracken) to see all the possibilities of what can be done with the outputs of each. 
+
 
