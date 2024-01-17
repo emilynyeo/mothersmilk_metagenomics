@@ -72,7 +72,10 @@ cookiecutter --output-dir "$profile_dir" "$template"
 ```
 
 ## Running Snakemake.
-Before staring, check to see if path and parameters need to be changed in [`run.sh`](run_very_light.sh) and [`src/index.sh`](https://github.com/emilynyeo/mothersmilk_metagenomics/blob/main/src/ems_config.yaml) and [`src/ems_config.yaml`](https://github.com/emilynyeo/mothersmilk_metagenomics/blob/main/src/index.sh). I actually recommend making your own config and referencing it in the index and run files. 
+Before staring, check to see if path and parameters need to be changed in [`run.sh`](run_very_light.sh) and [`src/index.sh`](https://github.com/emilynyeo/mothersmilk_metagenomics/blob/main/src/ems_config.yaml) and [`src/ems_config.yaml`](https://github.com/emilynyeo/mothersmilk_metagenomics/blob/main/src/index.sh). I actually recommend making your own config and referencing it in the index and run files. Below is a visual of how these files work together to run the snakefile:
+
+<img width="1054" alt="snakemake_connections" src="https://github.com/emilynyeo/mothersmilk_metagenomics/assets/104112036/b3e34d12-0f0b-4f3d-ad98-4b29ef432533">
+
 
 Do you want to do a demo run or a full blown run? ... Probably demo. This can be done in 2 ways, but I recommend the sbatch way (way 2 below), just because it better mimics what would actually happen and you can ask for more resources. The [demo run](snakefile_demo) will simply make txt files of the input sample names. This is just so you can get an idea of how snakemake works. 
 
@@ -100,5 +103,7 @@ sbatch run_very_light.sh
 ## About the Rules being Run.
 
 see [here](https://emilyyeo.notion.site/MothersMilk-Metagenomics-Info-62930e8b108e4bd79dccee3ffc484d04#d7a7bb2cc69d40b1b47b50803f1460fd)
+
+Please checkout the sites for all the individual tools used in these processing steps (FastQC, Humann3, Kracken, Bracken) to see all the possibilities of what can be done with the outputs of each. 
 
 
