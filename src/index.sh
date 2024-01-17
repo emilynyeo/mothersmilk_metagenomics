@@ -24,14 +24,12 @@ conda activate snakemake
 # runnning MM pipeline
 echo 'running MM pipeline' > $log
 start_slice=$(date +%s.%3N)
-snakemake -s Snakefile_resources_nov24 \
+snakemake -s concat.smk \
     --profile /pl/active/ADOR/projects/mothersmilk/mothersmilk_metagenomics/.config/snakemake/slurm \
     --configfile src/ems_config.yaml \
     --use-conda \
-    -c 2 \
-    -j 1 \
-    --dryrun \
-    --quiet \
+    -c 32 \
+    -j 100 \
     --printshellcmds
 end_slice=$(date +%s.%3N)
 slice_time=$(echo "scale=3; $end_slice - $start_slice" | bc)
